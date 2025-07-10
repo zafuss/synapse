@@ -1,0 +1,96 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.4"
+          channel: "stable"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze project source
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build APK
+        run: flutter build apk --debug
+
+      - name: Build iOS (simulator)
+        run: flutter build ios --debug --no-codesign
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: build/app/outputs/flutter-apk/app-debug.apk
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.4"
+          channel: "stable"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run custom linting
+        run: |
+          # Check for TODO comments
+          if grep -r "TODO" lib/; then
+            echo "Found TODO comments. Please resolve them before merging."
+            exit 1
+          fi
+
+          # Check for print statements
+          if grep -r "print(" lib/; then
+            echo "Found print statements. Please remove them before merging."
+            exit 1
+          fi
+
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.4"
+          channel: "stable"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check for secrets
+        run: |
+          # Check for hardcoded API keys
+          if grep -r "sk-" lib/ || grep -r "AIza" lib/; then
+            echo "Found potential API keys. Please use environment variables."
+            exit 1
+          fi

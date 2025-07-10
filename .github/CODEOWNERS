@@ -1,0 +1,32 @@
+# Global owners
+* @zafuss
+
+# Core application logic
+lib/core/ @zafuss
+lib/features/ @zafuss
+lib/shared/ @zafuss
+
+# Platform specific code
+android/ @zafuss
+ios/ @zafuss
+linux/ @zafuss
+macos/ @zafuss
+windows/ @zafuss
+web/ @zafuss
+
+# Testing
+test/ @zafuss
+
+# Documentation
+docs/ @zafuss
+README.md @zafuss
+CONTRIBUTING.md @zafuss
+COMMIT_CONVENTION.md @zafuss
+
+# Configuration files
+pubspec.yaml @zafuss
+analysis_options.yaml @zafuss
+.gitignore @zafuss
+
+# GitHub workflows and templates
+.github/ @zafuss 
