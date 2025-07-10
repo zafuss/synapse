@@ -154,7 +154,7 @@ synapse/
 - **Language**: Dart 3.2.0+
 - **State Management**: BLoC (flutter_bloc 8.1.3)
 - **Local Storage**: Hive 2.2.3
-- **Markdown**: flutter_markdown 0.6.18
+- **Markdown**: markdown_widget 2.3.2
 - **AI Integration**: Google Gemini API
 - **HTTP Client**: Dio 5.3.2
 

@@ -170,7 +170,7 @@ App State → Repository → Data Source → Hive Database → Local Storage
 
 ### 4. UI Components
 
-- **flutter_markdown**: 0.6.18 (Markdown rendering)
+- **markdown_widget**: 2.3.2 (Markdown rendering)
 - **markdown**: 7.2.1 (Markdown parsing)
 - **google_fonts**: 6.1.0 (Typography)
 - **flutter_svg**: 2.0.9 (SVG support)

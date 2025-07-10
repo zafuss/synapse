@@ -166,7 +166,7 @@
 
 **Tasks:**
 
-- [ ] Integrate flutter_markdown
+- [ ] Integrate markdown_widget
 - [ ] Create Markdown preview widget
 - [ ] Implement mode toggle
 - [ ] Add syntax highlighting

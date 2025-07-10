@@ -133,7 +133,7 @@ dependencies:
   hive_flutter: ^1.1.0
 
   # UI Components
-  flutter_markdown: ^0.6.18
+  markdown_widget: ^2.3.2
   google_fonts: ^6.1.0
 
   # Network
@@ -142,6 +142,7 @@ dependencies:
   # Utils
   uuid: ^4.2.1
   intl: ^0.18.1
+  file_selector: ^1.0.3
 
 dev_dependencies:
   flutter_test:

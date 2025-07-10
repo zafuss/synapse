@@ -254,7 +254,7 @@ Synapse is a local-first, AI-powered note-taking application that combines the s
 
 - **TR-2.1**: flutter_bloc for state management
 - **TR-2.2**: hive for local database
-- **TR-2.3**: flutter_markdown for Markdown rendering
+- **TR-2.3**: markdown_widget for Markdown rendering
 - **TR-2.4**: dio for HTTP requests
 - **TR-2.5**: uuid for unique ID generation
 
