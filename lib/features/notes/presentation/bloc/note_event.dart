@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/note.dart';
 
 /// Base class for all note events
 abstract class NoteEvent extends Equatable {

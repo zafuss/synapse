@@ -3,64 +3,111 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/note_bloc.dart';
 import '../bloc/note_event.dart';
 import '../bloc/note_state.dart';
-import '../widgets/note_card.dart';
+import '../../domain/entities/note.dart';
+import 'package:synapse/shared/widgets/app_bar_widget.dart';
+import 'package:synapse/shared/widgets/note_card_widget.dart';
+import 'package:synapse/shared/widgets/empty_state_widget.dart';
+import 'package:synapse/shared/widgets/loading_widget.dart';
+import 'package:synapse/shared/widgets/custom_fab_widget.dart';
+import 'editor_page.dart';
 
-class NotesPage extends StatelessWidget {
+class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
+
+  @override
+  State<NotesPage> createState() => _NotesPageState();
+}
+
+class _NotesPageState extends State<NotesPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<NoteBloc>().add(const LoadNotes());
+  }
+
+  void _openEditor({Note? note}) {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => EditorPage(note: note)));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Synapse Notes'),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: const AppBarWidget(
+        title: 'Synapse Notes',
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // TODO: Implement search
-            },
-          ),
+          // TODO: Add search/filter actions if needed
         ],
       ),
       body: BlocBuilder<NoteBloc, NoteState>(
         builder: (context, state) {
           if (state is NoteLoading || state is NoteInitial) {
-            return const Center(child: CircularProgressIndicator());
+            return const LoadingWidget(
+              message: 'Loading your notes...',
+              size: 60,
+            );
           }
+
           if (state is NoteError) {
-            return Center(child: Text('Error: ${state.message}'));
-          }
-          if (state is NotesLoaded) {
-            if (!state.hasNotes) {
-              return const Center(
-                child: Text('No notes yet. Tap + to create your first note!'),
-              );
-            }
-            return ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: state.sortedNotes.length,
-              itemBuilder: (context, index) {
-                final note = state.sortedNotes[index];
-                return NoteCard(
-                  note: note,
-                  onTap: () {
-                    // TODO: Navigate to editor page for editing
-                  },
-                  onDelete: () {
-                    context.read<NoteBloc>().add(DeleteNoteEvent(note.id));
-                  },
-                );
+            return EmptyStateWidget(
+              message: 'Something went wrong',
+              subtitle: state.message,
+              icon: Icons.error_outline,
+              actionLabel: 'Try Again',
+              onAction: () {
+                context.read<NoteBloc>().add(const LoadNotes());
               },
             );
           }
+
+          if (state is NotesLoaded) {
+            if (!state.hasNotes) {
+              return EmptyStateWidget(
+                message: 'No notes yet',
+                subtitle: 'Tap + to create your first note!',
+                icon: Icons.note_add_outlined,
+                actionLabel: 'Create Note',
+                onAction: () => _openEditor(),
+              );
+            }
+
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
+                  ],
+                ),
+              ),
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: state.sortedNotes.length,
+                itemBuilder: (context, index) {
+                  final note = state.sortedNotes[index];
+                  return NoteCardWidget(
+                    note: note,
+                    onTap: () => _openEditor(note: note),
+                    onDelete: () {
+                      context.read<NoteBloc>().add(DeleteNoteEvent(note.id));
+                    },
+                  );
+                },
+              ),
+            );
+          }
+
           return const SizedBox.shrink();
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Navigate to editor page for creating new note
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: CustomFABWidget(
+        onPressed: () => _openEditor(),
+        icon: Icons.add,
+        tooltip: 'Create new note',
       ),
     );
   }
